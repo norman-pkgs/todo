@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+[[ $TODO_DIR == "" ]] && notify-send "TODO_DIR IS NOT ASSIGNED, TODOs WILL NOT WORK!" && exit 1
+[[ ! -d $TODO_DIR ]] && mkdir $TODO_DIR
+
+cd $TODO_DIR
+files=$(find . -type f -printf '%P\n')
+[[ "$files" == "" ]] && files="                              "
+subject=$(echo "$files" | sed 's/\.md//' | dmenu -p "Subject")
+[[ "$subject" == "" ]] && notify-send "Empty input, not creating todo!" && exit 1
+[[ -f "$subject".md ]] && notify-send "Duplicate todo, not creating" && exit 1
+
+touch "$subject.md"
+echo "# $subject" >> "$subject.md"

@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+[[ $TODO_DIR == "" ]] && notify-send "TODO_DIR IS NOT ASSIGNED, TODOs WILL NOT WORK!" && exit 1
+[[ ! -d $TODO_DIR ]] && mkdir $TODO_DIR
+
+cd $TODO_DIR
+files=$(find . -type f -printf '%P\n')
+[[ "$files" == "" ]] && notify-send "No todo's to select from" && exit 1
+subject=$(echo "$files" | sed 's/\.md//' | fzf)
+[[ ! -f "$subject".md ]] && notify-send "This todo doesn't exist!" && exit 1
+nvim "$subject".md
